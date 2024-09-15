@@ -1,15 +1,15 @@
 package com.jp.notify_me.service;
 
+import java.time.LocalDateTime;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.twilio.Twilio;
-import com.twilio.converter.Promoter;
-import com.twilio.rest.api.v2010.account.Message;
-import com.twilio.type.PhoneNumber;
 
 import com.jp.notify_me.dto.EnvioMensagemDTO;
 import com.jp.notify_me.model.Mensagem;
 import com.jp.notify_me.repository.MensagemRepository;
+import com.twilio.Twilio;
+import com.twilio.rest.api.v2010.account.Message;
 
 @Service
 public class MensagemService {
@@ -20,14 +20,22 @@ public class MensagemService {
     @Autowired
     MensagemRepository repository;
 
-    public String enviarMensagem(EnvioMensagemDTO dto){
+    public Mensagem enviarMensagem(EnvioMensagemDTO dto){
         var mensagem = repository.save(new Mensagem(dto));
 
         var response = realizarEnvioMensagem(mensagem);
-        return response;
+        if(response != null && response.getErrorCode() == null){
+
+            mensagem.setDataEnvio(LocalDateTime.now());
+            repository.save(mensagem);
+            return mensagem;
+        }else{
+            System.out.println("erro ao enviar mensagem");
+            return mensagem;
+        }
     }
 
-    public String realizarEnvioMensagem(Mensagem mensagem){
+    public Message realizarEnvioMensagem(Mensagem mensagem){
 
         Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
         Message message = Message.creator(
@@ -38,7 +46,7 @@ public class MensagemService {
 
         System.out.println(message.getSid());
 
-        return message.getSid();
+        return message;
     }
     
 }
