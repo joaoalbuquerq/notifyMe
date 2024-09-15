@@ -14,8 +14,8 @@ import com.twilio.rest.api.v2010.account.Message;
 @Service
 public class MensagemService {
 
-    public static final String ACCOUNT_SID = "AC226f0336ac0867a3e28c876a6f42df95";
-    public static final String AUTH_TOKEN = "38d2d9e4eff21628d7fbed3ddb474294";
+    public static final String ACCOUNT_SID = "";
+    public static final String AUTH_TOKEN = "";
 
     @Autowired
     MensagemRepository repository;
